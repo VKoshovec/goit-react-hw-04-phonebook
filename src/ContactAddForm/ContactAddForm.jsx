@@ -1,23 +1,23 @@
-import { Component } from "react";
 import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import css from './contactAddForm.module.css';
 
-class ContactAddForm extends Component {
 
-    hendleSubmit = e => {
+const ContactAddForm = ({ onSubmit }) => {
+
+    const hendleSubmit = e => {
         e.preventDefault();
         const form = e.currentTarget;
         const name = form.elements.name.value;
         const number = form.elements.number.value;
         const id = nanoid ();
-        this.props.onSubmit({ id , name, number });
+        onSubmit({ id , name, number });
         form.reset();
     }
 
-    render () {
-        return  (
-            <form className={css.contactAddForm} onSubmit={ this.hendleSubmit }>
+
+    return (
+        <form className={css.contactAddForm} onSubmit={ hendleSubmit }>
                 <label className={ css.formInputLabel}>Name
                     <input
                       className={ css.formInput}
@@ -40,10 +40,8 @@ class ContactAddForm extends Component {
                 </label>
                 <button className={ css.formButton } type="submit">Add contact</button>
             </form>
-        )
-    }
-};
-
+    );
+}
 
 ContactAddForm.propTypes = {
     onSubmit: PropTypes.func.isRequired,

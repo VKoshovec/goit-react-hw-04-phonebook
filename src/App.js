@@ -1,22 +1,19 @@
 
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import css from './phoneBook.module.css';
 import ContactList from "./ContactList/ContactList";
 import ContactAddForm from "./ContactAddForm/ContactAddForm";
 import ContactFilter from "./ContactFilter/ContactFilter";
 
+const App = () => {
 
-class App extends Component {
+    const [contacts, setContacts] = useState([]);
+    const [filter, setFilter] = useState ('');
 
-    state = {
-        contacts: [],
-        filter: '' 
-    };
-
-    addContact = (newContact) => {
+    const addContacts = (newContact) => {
 
         const newContacts  = [];
-        const currentContacts = this.state.contacts;
+        const currentContacts = contacts;
 
         const isPresentContact = currentContacts.find(element => 
             element.name.toLowerCase() === newContact.name.toLowerCase()
@@ -28,66 +25,48 @@ class App extends Component {
         } else {
             newContacts.push(...currentContacts);
             newContacts.push(newContact);
-            this.setState({contacts: newContacts});
+            setContacts(newContacts);
         }        
     };
 
-    addFilter = (newFilter) => {
-        this.setState({
-            filter: newFilter,
-        })
-    };
-
-    fileteredContacts = (filterName) => {
-        const currentContacts = this.state.contacts;
+    const fileteredContacts = (filterName) => {
+        const currentContacts = contacts;
 
         return currentContacts.filter(contact =>      
              contact.name.toLowerCase().includes(filterName.toLowerCase()))
     };
 
-    deleteContact = (e) => {
-        const currentContacts = this.state.contacts;
+    const deleteContact = (e) => {
+        const currentContacts = contacts;
         const delContact = e.currentTarget.name;
         const newStateContacts = currentContacts.filter(element=> element.name !== delContact);
-        this.setState(
-           { contacts: newStateContacts } 
-        );
+        setContacts (newStateContacts);
     };
 
-    componentDidMount(){       
+    useEffect (() => {
         const LocalStoragePhonebook = localStorage.getItem('LocalPhonebook');
         const LocalPhonebook = JSON.parse(LocalStoragePhonebook);
 
         if (LocalPhonebook?.length) {
-            this.setState({contacts: LocalPhonebook});
-        }; 
-    }
+            setContacts ( LocalPhonebook );
+        };        
+    }, []);
 
-    componentDidUpdate (prevProps, prevState) {
-        const prevConatcts = prevState.contacts;
-        const currentContacts = this.state.contacts;
+    useEffect (()=>{
+        localStorage.setItem ('LocalPhonebook', JSON.stringify(contacts))
+    }, [contacts]);
+    
+    const contactList = filter ? fileteredContacts(filter) : contacts;
 
-        if (currentContacts !== prevConatcts) {
-            localStorage.setItem ('LocalPhonebook', JSON.stringify(currentContacts));
-        }
-    }
-
-    render () {
-        
-        const filterStatus = this.state.filter;
-        const currentContactList = this.state.contacts;
-        const contactList = filterStatus ? this.fileteredContacts(filterStatus) : currentContactList;
-
-        return (
+    return (
         <div className= {css.phoneBook}>
             <h1>Phonebook</h1>
-            <ContactAddForm onSubmit = { res => this.addContact(res) } />
+            <ContactAddForm onSubmit = { res => addContacts(res) } />
             <h2>Contacts</h2>
-            <ContactFilter onChange = { filter => this.addFilter(filter) } value={ filterStatus }/>
-            <ContactList contacts={ contactList } onClick = { this.deleteContact }/>
+            <ContactFilter onChange = { filter => setFilter(filter) } value={ filter }/>
+            <ContactList contactArr={ contactList } onClick = { deleteContact }/>
         </div>
-        )
-    }
+    );
 }
 
 export default App;

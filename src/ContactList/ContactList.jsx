@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import ContactItem from '../ContactItem/ContactItem';
 
-const ContactList = ({contacts, onClick}) => {
+const ContactList = ({contactArr, onClick}) => {
     return (
       <ul>
-        { contacts.map((element)=> {
+        { contactArr.map((element)=> {
           return <ContactItem key = { element.id }
              name = { element.name }
              number = { element.number }
@@ -16,7 +16,7 @@ const ContactList = ({contacts, onClick}) => {
 }
 
 ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
+  contactList: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
