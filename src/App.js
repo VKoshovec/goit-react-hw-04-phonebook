@@ -13,9 +13,8 @@ const App = () => {
     const addContacts = (newContact) => {
 
         const newContacts  = [];
-        const currentContacts = contacts;
 
-        const isPresentContact = currentContacts.find(element => 
+        const isPresentContact = contacts.find(element => 
             element.name.toLowerCase() === newContact.name.toLowerCase()
         ) ? true: false;
         
@@ -23,23 +22,21 @@ const App = () => {
         if (isPresentContact){
             alert(`${newContact.name} is already in contacts.`)
         } else {
-            newContacts.push(...currentContacts);
+            newContacts.push(...contacts);
             newContacts.push(newContact);
             setContacts(newContacts);
         }        
     };
 
     const fileteredContacts = (filterName) => {
-        const currentContacts = contacts;
 
-        return currentContacts.filter(contact =>      
+        return contacts.filter(contact =>      
              contact.name.toLowerCase().includes(filterName.toLowerCase()))
     };
 
     const deleteContact = (e) => {
-        const currentContacts = contacts;
         const delContact = e.currentTarget.name;
-        const newStateContacts = currentContacts.filter(element=> element.name !== delContact);
+        const newStateContacts = contacts.filter(element=> element.name !== delContact);
         setContacts (newStateContacts);
     };
 
